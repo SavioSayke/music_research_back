@@ -1,15 +1,78 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model Participant {
+  id               String    @id @default(uuid())
+  anonToken        String    @unique
+  consentTimestamp DateTime
+  demographics     Json?
+  createdAt        DateTime  @default(now())
+  sessions         Session[]
+}
+
+model Session {
+  id            String       @id @default(uuid())
+  participantId String
+  participant   Participant  @relation(fields: [participantId], references: [id])
+  entryTs       DateTime     @default(now())
+  exitTs        DateTime?
+  totalSeconds  Int?
+  stimulusSetId String
+  stimulusSet   StimulusSet? @relation(fields: [stimulusSetId], references: [id])
+  completed     Boolean      @default(false)
+  randomSeed    Int?
+  plays         Play[]
+  responses     Response[]
+  createdAt     DateTime     @default(now())
+
+  @@index([participantId])
+  @@index([stimulusSetId])
+}
+
+model Play {
+  id         String    @id @default(uuid())
+  sessionId  String
+  session    Session   @relation(fields: [sessionId], references: [id])
+  trackId    String
+  orderIndex Int
+  startedTs  DateTime
+  endedTs    DateTime?
+  playedFull Boolean   @default(false)
+  playCount  Int       @default(1)
+  createdAt  DateTime  @default(now())
+
+  @@index([sessionId])
+  @@index([trackId])
+}
+
+model Response {
+  id             String   @id @default(uuid())
+  sessionId      String
+  session        Session  @relation(fields: [sessionId], references: [id])
+  questionId     String
+  answer         String
+  responseTimeMs Int?
+  createdAt      DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model StimulusSet {
+  id        String    @id
+  name      String
+  source    String?
+  items     Json
+  createdAt DateTime  @default(now())
+  sessions  Session[]
+}
+
+model TrackCache {
+  trackId   String   @id
+  metadata  Json
+  updatedAt DateTime @updatedAt
 }

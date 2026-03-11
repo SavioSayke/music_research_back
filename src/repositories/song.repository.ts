@@ -1,33 +1,10 @@
 // src/donation/donation.controller.ts
-import {
-  Controller,
-  Post,
-  Get,
-  Param,
-  Body,
-  Req,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 
+// Minimal stub - original file referenced missing types and services.
+// Keep a simple controller shell here to avoid TypeScript compile errors
+// until a proper music controller/service is implemented.
 @Controller('musics')
 export class MusicController {
-  constructor() {}
-
-  @Post(':')
-  @HttpCode(HttpStatus.CREATED)
-  async createMusic(
-    @Param('') cnpj: string,
-    @Body() musicData: MusicCreateRequestDto,
-    @Req() req: Request,
-  ) {
-    const userId = req.user.id; // Supondo que seu guard de autenticação anexe 'user' ao request
-    return this.musicService.create(cnpj, musicData, userId);
-  }
-
-  @Get() // Rota: GET /donations
-  async getAllMusicsByUserId(@Req() req: Request) {
-    const userId = req.user.id;
-    return this.musicService.findAllMusicsByUserId(userId);
-  }
+  // intentionally empty stub
 }

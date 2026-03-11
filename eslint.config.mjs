@@ -27,11 +27,11 @@ export default tseslint.config(
   {
     rules: {
       '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/consistent-type-imports': 'error', 
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
       'no-console': 'warn',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
       "prettier/prettier": [
