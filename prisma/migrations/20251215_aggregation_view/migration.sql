@@ -5,38 +5,37 @@ CREATE OR REPLACE VIEW mv_session_track_agg AS
 SELECT
     s.id AS session_id,
     p.id AS participant_id,
-    p.anon_token AS participant_anon_token,
-    s.stimulus_set_id,
-    s.entry_ts,
-    s.exit_ts,
+    p."anonToken" AS participant_anon_token,
+    s."stimulusSetId",
+    s."entryTs",
+    s."exitTs",
     s.completed,
-    s.total_seconds,
-    pl.track_id,
+    s."totalSeconds",
+    pl."trackId",
     COUNT(pl.id) AS play_count,
     SUM(
         CASE
-            WHEN pl.played_full THEN 1
+            WHEN pl."playedFull" THEN 1
             ELSE 0
         END
     ) AS played_full_count,
-    AVG(r.response_ms) AS average_response_ms
+    AVG(r."responseTimeMs") AS average_response_ms
 FROM
-    session s
-    LEFT JOIN participant p ON p.id = s.participant_id
-    LEFT JOIN play pl ON pl.session_id = s.id
-    LEFT JOIN response r ON r.session_id = s.id
-    AND r.track_id = pl.track_id
+    "Session" s
+    LEFT JOIN "Participant" p ON p.id = s."participantId"
+    LEFT JOIN "Play" pl ON pl."sessionId" = s.id
+    LEFT JOIN "Response" r ON r."sessionId" = s.id
 GROUP BY
     s.id,
     p.id,
-    p.anon_token,
-    s.stimulus_set_id,
-    s.entry_ts,
-    s.exit_ts,
+    p."anonToken",
+    s."stimulusSetId",
+    s."entryTs",
+    s."exitTs",
     s.completed,
-    s.total_seconds,
-    pl.track_id;
+    s."totalSeconds",
+    pl."trackId";
 
 -- Optional index suggestions (cannot be created in view; add on base tables)
--- CREATE INDEX IF NOT EXISTS idx_play_session_track ON play(session_id, track_id);
--- CREATE INDEX IF NOT EXISTS idx_response_session_track ON response(session_id, track_id);
+-- CREATE INDEX IF NOT EXISTS idx_play_session_track ON "Play"("sessionId", "trackId");
+-- CREATE INDEX IF NOT EXISTS idx_response_session_track ON "Response"("sessionId");
