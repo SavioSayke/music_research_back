@@ -6,19 +6,19 @@ SELECT
     s.id AS session_id,
     p.id AS participant_id,
     p."anonToken" AS participant_anon_token,
-    s."stimulusSetId",
-    s."entryTs",
-    s."exitTs",
+    s."stimulusSetId" AS stimulus_set_id,
+    s."entryTs" AS entry_ts,
+    s."exitTs" AS exit_ts,
     s.completed,
-    s."totalSeconds",
-    pl."trackId",
-    COUNT(pl.id) AS play_count,
+    s."totalSeconds" AS total_seconds,
+    pl."trackId" AS track_id,
+    COUNT(pl.id)::integer AS play_count,
     SUM(
         CASE
             WHEN pl."playedFull" THEN 1
             ELSE 0
         END
-    ) AS played_full_count,
+    )::integer AS played_full_count,
     AVG(r."responseTimeMs") AS average_response_ms
 FROM
     "Session" s
@@ -35,7 +35,3 @@ GROUP BY
     s.completed,
     s."totalSeconds",
     pl."trackId";
-
--- Optional index suggestions (cannot be created in view; add on base tables)
--- CREATE INDEX IF NOT EXISTS idx_play_session_track ON "Play"("sessionId", "trackId");
--- CREATE INDEX IF NOT EXISTS idx_response_session_track ON "Response"("sessionId");
