@@ -8,4 +8,4 @@ RUN pnpm install
 COPY . .
 
 EXPOSE 3000
-CMD ["pnpm", "run", "start:dev"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npx ts-node --project tsconfig.scripts.json --transpile-only prisma/seed.ts && pnpm run start:dev"]
