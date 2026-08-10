@@ -5,6 +5,11 @@ WORKDIR /app
 
 # ---------- Build ----------
 FROM base AS build
+# prisma.config.ts exige DIRECT_URL mesmo em "prisma generate"/postinstall,
+# que não tocam o banco. O placeholder é suficiente; a URL real é injetada
+# em runtime via variáveis de ambiente do deploy.
+ARG DIRECT_URL="postgresql://placeholder:placeholder@localhost:5432/music_research"
+ENV DIRECT_URL=$DIRECT_URL
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY prisma ./prisma
