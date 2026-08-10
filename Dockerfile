@@ -26,5 +26,8 @@ COPY --from=build /app/package.json ./
 COPY --from=build /app/prisma.config.ts ./
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/dist ./dist
+# suporta o comando "prisma db seed" (ts-node usa tsconfig.scripts.json)
+COPY --from=build /app/tsconfig.json ./tsconfig.json
+COPY --from=build /app/tsconfig.scripts.json ./tsconfig.scripts.json
 EXPOSE 3000
 CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/src/main"]
